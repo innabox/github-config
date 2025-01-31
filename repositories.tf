@@ -1,4 +1,5 @@
-# Create infrastructure repository
+# See Create infrastructure repository for syntax
+
 resource "github_repository" "issues" {
   name        = "issues"
   description = "Issues related to AI in a Box project"
