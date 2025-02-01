@@ -16,3 +16,21 @@ resource "github_team_membership" "members" {
   username = each.value.username
   role     = each.value.role
 }
+
+resource "github_team" "all_members" {
+  name        = "all-members"
+  description = "All organization members"
+  privacy     = "closed"
+
+}
+
+resource "github_team_membership" "all_members" {
+  for_each = {
+    for member in csvdecode(file("members.csv")) :
+    member.username => member
+  }
+
+  team_id  = "all-members"
+  role     = "member"
+  username = each.value.username
+}
