@@ -28,7 +28,6 @@ on:
 jobs:
   plan:
     runs-on: ubuntu-latest
-    environment: tofu
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -46,9 +45,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - run: tofu init
+      - run: tofu fmt -recursive -check -diff
 
-      - run: tofu fmt -recursive -check
+      - run: tofu init
 
       - run: tofu plan -concise -no-color -out tf.plan
         env:
