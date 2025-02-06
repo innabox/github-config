@@ -30,6 +30,6 @@ jobs:
           private-key: ${{ secrets.CONFIG_APP_SECRET }}
           owner: ${{ github.repository_owner }}
 
-      - run: tofu apply -concise -auto-approve
+      - run: tofu apply -auto-approve
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
