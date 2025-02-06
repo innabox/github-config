@@ -12,6 +12,8 @@ jobs:
       with:
         python-version: "3.13"
     - uses: opentofu/setup-opentofu@v1
+    - run: |
+        tofu version
     - uses: pre-commit/action@v3.0.1
       with:
-        extra_args: --all-files
+        extra_args: --all-files -v
