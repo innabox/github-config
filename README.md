@@ -10,19 +10,24 @@ This repository contains [OpenTofu] plan to manage the [innabox] GitHub organiza
 
 When a commit is pushed to the `main` branch (e.g., when a pull request merges), that triggers the `.github/workflows/apply.yaml` workflow. This workflow acquires necessary credentials from GithHub secrets and from the "Org Config Management" GitHub app, and then uses [OpenTofu] to apply the requested configuration.
 
-## How do I...?
+## How do I...
 
-### Add a new organization member
+### Add a new organization member?
 
 1. Open `members.csv`
 1. Add a new row of the form `<username>,<role>`, where `<role>` in almost all cases should be `member`.
 
-### Add a new team
+### Add a new team?
 
 1. Open `teams.csv`
 1. Add a new row of the form `<team_name>,<description>,<privacy>`, where `<privacy>` can be either `closed` (visible to all members of the organization) or `secret` (visible to organization owners and members of this team)
 
-### Add a new repository
+### Add an organization member to a team?
+
+1. Open `team-members/<team>.csv`
+1. Add a new line of the form `<username>,<role>`, where `<role>` should be `member`.
+
+### Add a new repository?
 
 1. Open `repositories.tf`
 1. Add a new block of the form:
@@ -34,6 +39,12 @@ When a commit is pushed to the `main` branch (e.g., when a pull request merges),
       description = "<repository_description"
     }
     ```
+
+### Add a new label to all managed repositories?
+
+1. Open `modules/common_repository/labels.csv`
+
+2. Add a new line of the form `<name>,<color>,<description>`
 
 Where `<repository_name_slug>` is `<repository_name>` transformed to be a valid identifier in most common languages: a single word consisting of only alphanumerics and underscores. So e.g. `github-config` would become `github_config`, and `.gitjub` would become something like `dotgithub` (`_github` would also work).
 
