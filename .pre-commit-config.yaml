@@ -22,6 +22,7 @@ repos:
 - repo: local
   hooks:
   - id: tofu-fmt
+    pass_filenames: false
     name: tofu-fmt
     language: script
     files: \.tf$
