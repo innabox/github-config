@@ -64,3 +64,29 @@ module "repo_fulfillment_wg" {
     }
   ]
 }
+
+module "repo_personas_wg" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "personas-wg"
+  description = "Workspace for the personas working group"
+  teams = [
+    {
+      team_id    = "personas-wg"
+      permission = "push"
+    }
+  ]
+}
+
+module "repo_observability_wg" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "observability-wg"
+  description = "Workspace for the observability working group"
+  teams = [
+    {
+      team_id    = "observability-wg"
+      permission = "push"
+    }
+  ]
+}
