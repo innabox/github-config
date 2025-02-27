@@ -51,3 +51,16 @@ module "repo_public_template" {
   use_public_template = false
   is_template         = true
 }
+
+module "repo_fulfillment_wg" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "fulfillment-wg"
+  description = "Workspace for the fulfillment working group"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}

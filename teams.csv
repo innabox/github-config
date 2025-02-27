@@ -1,2 +1,3 @@
 name,description,privacy
 org-admins,Organization Administrators,secret
+fulfillment-wg,Fulfillment working group,secret
