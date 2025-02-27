@@ -88,3 +88,9 @@ variable "use_public_template" {
   type        = bool
   default     = true
 }
+
+variable "vulnerability_alerts" {
+  description = "Enable or disable dependabot vulnerability alerts"
+  type        = bool
+  default     = false
+}
