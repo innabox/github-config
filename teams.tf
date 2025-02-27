@@ -17,6 +17,10 @@ resource "github_team_membership" "members" {
   team_id  = each.value.team_id
   username = each.value.username
   role     = each.value.role
+
+  depends_on = [
+    github_team.all
+  ]
 }
 
 # This creates an "all-members" team containing all organization members.
@@ -36,4 +40,8 @@ resource "github_team_membership" "all-members" {
   team_id  = "all-members"
   role     = each.value.role == "admin" ? "maintainer" : "member"
   username = each.value.username
+
+  depends_on = [
+    github_team.all-members
+  ]
 }
