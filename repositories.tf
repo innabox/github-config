@@ -90,3 +90,16 @@ module "repo_observability_wg" {
     }
   ]
 }
+
+module "repo_fulfillment_api" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "fulfillment-api"
+  description = "Cloud-in-a-box fulfillment API"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
