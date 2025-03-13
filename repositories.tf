@@ -116,3 +116,17 @@ module "repo_hypershift_cluster_config" {
     }
   ]
 }
+
+module "repo_fulfillment_service" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "fulfillment-service"
+  description = "Cloud-in-a-box fulfillment service"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
+
