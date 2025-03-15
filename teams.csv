@@ -3,3 +3,4 @@ org-admins,Organization Administrators,secret
 fulfillment-wg,Fulfillment working group,secret
 observability-wg,observability working group,secret
 personas-wg,Personas working group,secret
+documentation-wg,Documentation working group,secret

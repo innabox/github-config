@@ -10,6 +10,13 @@ module "repo_docs" {
   name                = "docs"
   description         = "General documentation for the AI in a Box project"
   use_public_template = false
+
+  teams = [
+    {
+      team_id    = "documentation-wg"
+      permission = "push"
+    }
+  ]
 }
 
 module "repo_dotgithub" {
