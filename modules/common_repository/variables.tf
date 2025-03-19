@@ -94,3 +94,24 @@ variable "vulnerability_alerts" {
   type        = bool
   default     = false
 }
+
+variable "pages" {
+  description = "Configuration for github pages"
+  type = object({
+    source = optional(object({
+      branch = string
+      path   = string
+    }))
+    build_type = optional(string, "legacy")
+    cname      = optional(string)
+  })
+  default = null
+
+  validation {
+    error_message = "build_type must be one of \"workflow\" or \"legacy\""
+    condition = var.pages == null ? true : (
+      var.pages.build_type == null ||
+      contains(["workflow", "legacy"], var.pages.build_type)
+    )
+  }
+}
