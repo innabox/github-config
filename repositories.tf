@@ -109,6 +109,10 @@ module "repo_fulfillment_api" {
       permission = "push"
     }
   ]
+
+  pages = {
+    build_type = "workflow"
+  }
 }
 
 module "repo_hypershift_cluster_config" {
