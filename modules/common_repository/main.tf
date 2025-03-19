@@ -14,11 +14,41 @@ resource "github_repository" "repo" {
   dynamic "template" {
     # Use the public_template repository as a template unless the repository is
     # private or is a template
-    for_each = var.visibility == "private" ? [] : var.is_template ? [] : var.use_public_template ? [0] : []
+    for_each = var.visibility == "private" ? [] : var.is_template ? [] : var.use_public_template ? ["enabled"] : []
 
     content {
       owner      = "innabox"
       repository = "public_template"
+    }
+  }
+
+  # There are two `dynamic "pages"` blocks here to account for the fact that `source` is only required
+  # if `build_type` is "legacy". The `for_each` at the top of each block will only enable the block when
+  # the necessary conditions are met.
+  dynamic "pages" {
+
+    # enable this block if `pages` is not null and `build_type` is "legacy" (or null)
+    for_each = var.pages == null ? [] : var.pages.build_type == "legacy" || var.pages.build_type == null ? ["enabled"] : []
+
+    content {
+      source {
+        branch = var.pages.source.branch
+        path   = var.pages.source.path
+      }
+
+      cname      = var.pages.cname
+      build_type = "legacy"
+    }
+  }
+
+  dynamic "pages" {
+
+    # enable this block if `pages` is not null and `build_type` is "workflow"
+    for_each = var.pages == null ? [] : var.pages.build_type == "workflow" ? ["enabled"] : []
+
+    content {
+      cname      = var.pages.cname
+      build_type = "workflow"
     }
   }
 }
