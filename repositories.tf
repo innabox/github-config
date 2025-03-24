@@ -141,3 +141,16 @@ module "repo_fulfillment_service" {
     }
   ]
 }
+
+module "repo_cloudkit_operator" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "cloudkit-operator"
+  description = "Cloud-in-a-box kubernetes operator"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
