@@ -22,33 +22,22 @@ resource "github_repository" "repo" {
     }
   }
 
-  # There are two `dynamic "pages"` blocks here to account for the fact that `source` is only required
-  # if `build_type` is "legacy". The `for_each` at the top of each block will only enable the block when
-  # the necessary conditions are met.
   dynamic "pages" {
-
-    # enable this block if `pages` is not null and `build_type` is "legacy" (or null)
-    for_each = var.pages == null ? [] : var.pages.build_type == "legacy" || var.pages.build_type == null ? ["enabled"] : []
+    # enable this block if `pages` is not null
+    for_each = var.pages[*]
 
     content {
-      source {
-        branch = var.pages.source.branch
-        path   = var.pages.source.path
+      cname      = pages.value.cname
+      build_type = pages.value.build_type
+
+      dynamic "source" {
+        for_each = var.pages.source[*]
+
+        content {
+          branch = source.value.branch
+          path   = source.value.path
+        }
       }
-
-      cname      = var.pages.cname
-      build_type = "legacy"
-    }
-  }
-
-  dynamic "pages" {
-
-    # enable this block if `pages` is not null and `build_type` is "workflow"
-    for_each = var.pages == null ? [] : var.pages.build_type == "workflow" ? ["enabled"] : []
-
-    content {
-      cname      = var.pages.cname
-      build_type = "workflow"
     }
   }
 }

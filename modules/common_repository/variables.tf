@@ -111,7 +111,7 @@ variable "pages" {
     error_message = "build_type must be one of \"workflow\" or \"legacy\""
     condition = var.pages == null ? true : (
       var.pages.build_type == null ||
-      contains(["workflow", "legacy"], var.pages.build_type)
+      contains(["legacy", "workflow"], var.pages.build_type)
     )
   }
 }
