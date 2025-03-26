@@ -154,3 +154,16 @@ module "repo_cloudkit_operator" {
     }
   ]
 }
+
+module "repo_cloudkit_aap" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "cloudkit-aap"
+  description = "Cloud-in-a-box AAP configuration and playbooks"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
