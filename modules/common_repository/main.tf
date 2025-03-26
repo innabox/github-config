@@ -100,10 +100,10 @@ resource "github_repository_collaborators" "repo_collaborators" {
     permission = "push"
   }
 
-  # Always allow organization members to triage issues
+  # Permission for all organization members
   team {
     team_id    = "all-members"
-    permission = "triage"
+    permission = var.all_members_permission
   }
 
   # Generate team blocks from the value of the "teams" input variable.

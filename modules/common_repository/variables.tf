@@ -115,3 +115,13 @@ variable "pages" {
     )
   }
 }
+
+variable "all_members_permission" {
+  description = "Permission for all organization members"
+  type        = string
+  default     = "triage"
+  validation {
+    error_message = "invalid permission name"
+    condition     = contains(["pull", "push", "triage", "maintain", "admin"], var.all_members_permission)
+  }
+}
