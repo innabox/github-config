@@ -1,8 +1,10 @@
 module "repo_issues" {
-  source      = "./modules/common_repository"
-  name        = "issues"
-  visibility  = "private"
-  description = "Issues related to AI in a Box project"
+  source                 = "./modules/common_repository"
+  name                   = "issues"
+  visibility             = "public"
+  description            = "Issues related to AI in a Box project"
+  use_public_template    = false
+  all_members_permission = "push"
 }
 
 module "repo_docs" {
