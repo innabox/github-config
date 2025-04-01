@@ -1,4 +1,4 @@
-# Innabox common repository configuration
+# Common repository configuration
 
 Create a repository with managed labels, permissions, and branch protection rules.
 
@@ -55,14 +55,17 @@ module "repo_docs" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_all_members_permission"></a> [all\_members\_permission](#input\_all\_members\_permission) | Permission for all organization members | `string` | `"triage"` | no |
 | <a name="input_branch_protection"></a> [branch\_protection](#input\_branch\_protection) | Configure branch protection if true | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | Repository description | `string` | `""` | no |
 | <a name="input_is_template"></a> [is\_template](#input\_is\_template) | Set this to true if this is a template repository | `bool` | `false` | no |
 | <a name="input_labels"></a> [labels](#input\_labels) | List of labels to configure on the repository | <pre>list(object({<br/>    name        = string<br/>    color       = string<br/>    description = string<br/>  }))</pre> | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | The name of the repository | `string` | n/a | yes |
+| <a name="input_pages"></a> [pages](#input\_pages) | Configuration for github pages | <pre>object({<br/>    source = optional(object({<br/>      branch = string<br/>      path   = string<br/>    }))<br/>    build_type = optional(string, "legacy")<br/>    cname      = optional(string)<br/>  })</pre> | `null` | no |
 | <a name="input_required_approvals"></a> [required\_approvals](#input\_required\_approvals) | Number of approvals required before merging a pull request | `number` | `1` | no |
 | <a name="input_required_status_checks"></a> [required\_status\_checks](#input\_required\_status\_checks) | A list of status checks that must pass before a PR can merge | `list(string)` | `[]` | no |
 | <a name="input_teams"></a> [teams](#input\_teams) | Teams with access to this repository | <pre>list(object({<br/>    team_id    = string<br/>    permission = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_use_public_template"></a> [use\_public\_template](#input\_use\_public\_template) | Use the public\_template repository as the template for a new repository | `bool` | `true` | no |
 | <a name="input_users"></a> [users](#input\_users) | Users with access to this repository | <pre>list(object({<br/>    username   = string<br/>    permission = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_visibility"></a> [visibility](#input\_visibility) | Repository visibility (public or private) | `string` | `"public"` | no |
+| <a name="input_vulnerability_alerts"></a> [vulnerability\_alerts](#input\_vulnerability\_alerts) | Enable or disable dependabot vulnerability alerts | `bool` | `false` | no |
