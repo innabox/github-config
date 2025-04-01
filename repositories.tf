@@ -169,3 +169,16 @@ module "repo_cloudkit_aap" {
     }
   ]
 }
+
+module "repo_fulfillment_cli" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "fulfillment-cli"
+  description = "Cloud-in-a-box fulfillment CLI"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
