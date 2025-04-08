@@ -182,3 +182,16 @@ module "repo_fulfillment_cli" {
     }
   ]
 }
+
+module "repo_cloudkit_aap_ee" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "cloudkit-aap-ee"
+  description = "Cloud-in-a-box execution environment for AAP"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
