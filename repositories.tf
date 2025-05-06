@@ -117,10 +117,10 @@ module "repo_fulfillment_api" {
   }
 }
 
-module "repo_hypershift_cluster_config" {
+module "repo_managed_cluster_config" {
   source              = "./modules/common_repository"
   visibility          = "public"
-  name                = "hypershift-cluster-config"
+  name                = "managed-cluster-config"
   use_public_template = false
   description         = "Configuration for OpenShift cluster running ACM w/ Hosted Control Planes"
   teams = [
