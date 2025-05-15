@@ -131,6 +131,19 @@ module "repo_managed_cluster_config" {
   ]
 }
 
+module "repo_managed_cluster_apps" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "managed-cluster-apps"
+  description = "Argocd apps to deploy resources on the innabox cluster"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
+
 module "repo_fulfillment_service" {
   source      = "./modules/common_repository"
   visibility  = "public"
