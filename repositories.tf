@@ -208,3 +208,16 @@ module "repo_cloudkit_aap_ee" {
     }
   ]
 }
+
+module "repo_cloudkit_operator_config" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "cloudkit-operator-config"
+  description = "Configuration for our deployment of the cloudkit-operator"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
