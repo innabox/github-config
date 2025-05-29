@@ -1,13 +1,18 @@
 name,color,description
-bug,d73a4a,Something isn't working
-documentation,0075ca,Improvements or additions to documentation
-duplicate,cfd3d7,This issue or pull request already exists
-enhancement,a2eeef,New feature or request
-good first issue,7057ff,Good for newcomers
+bug,D73A4A,Something isn't working
+documentation,0075CA,Improvements or additions to documentation
+duplicate,CFD8DC,This issue or pull request already exists
+enhancement,A2EEEF,New feature or request
+good first issue,7057FF,Good for newcomers
 help wanted,008672,Extra attention is needed
-invalid,e4e669,This doesn't seem right
-question,d876e3,Further information is requested
-research,6D1C7F,This will consist mostly of information gathering
-wontfix,ffffff,This will not be worked on
-placeholder,453411,Placeholder for one or more future issues
-development,98EE84,This issue requires development work
+invalid,E4E669,This doesn't seem right
+question,D876E3,Further information is requested
+research,BFDADC,This will consist mostly of information gathering
+wontfix,FFFFFF,This will not be worked on
+placeholder,E6E6E6,Placeholder for one or more future issues
+development,FBCA04,This issue requires development work
+refactoring,F9D0C4,Refactor existing code
+incident,B60205,A specific event resulting in a service outage
+upstream,1D76DB,This is a bug in a product on which we depend
+infrastructure,0E2A47,Infrastructure issues not directly related to development
+technicaldebt,F299A8,Fixing this will reduce technical debt
