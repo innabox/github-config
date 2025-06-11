@@ -16,3 +16,6 @@ incident,B60205,A specific event resulting in a service outage
 upstream,1D76DB,This is a bug in a product on which we depend
 infrastructure,0E2A47,Infrastructure issues not directly related to development
 technicaldebt,F299A8,Fixing this will reduce technical debt
+p0,e94f24,Highest priority
+p1,ffc600,Medium priority
+p2,cfd8dc,Low priority
