@@ -221,3 +221,16 @@ module "repo_cloudkit_operator_config" {
     }
   ]
 }
+
+module "repo_cloudkit_installer" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "cloudkit-installer"
+  description = "Integration repository for installing all cloudkit components"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
