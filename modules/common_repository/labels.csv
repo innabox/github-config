@@ -19,3 +19,4 @@ technicaldebt,F299A8,Fixing this will reduce technical debt
 p0,e94f24,Highest priority
 p1,ffc600,Medium priority
 p2,cfd8dc,Low priority
+security,ff0000,This is a security issue
