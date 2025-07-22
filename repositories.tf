@@ -69,7 +69,7 @@ module "repo_fulfillment_wg" {
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
@@ -108,7 +108,7 @@ module "repo_fulfillment_api" {
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 
@@ -152,7 +152,7 @@ module "repo_fulfillment_service" {
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
