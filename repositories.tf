@@ -234,3 +234,11 @@ module "repo_cloudkit_installer" {
     }
   ]
 }
+
+module "repo_enhancement_proposals" {
+  source                 = "./modules/common_repository"
+  visibility             = "public"
+  name                   = "enhancement-proposals"
+  description            = "A repository for proposing enhancements to the innabox project"
+  all_members_permission = "push"
+}
