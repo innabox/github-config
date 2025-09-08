@@ -243,3 +243,16 @@ module "repo_enhancement_proposals" {
   description            = "A repository for proposing enhancements to the innabox project"
   all_members_permission = "push"
 }
+
+module "repo_fulfillment_common" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "fulfillment-common"
+  description = "Common code shared between the fulfillment service, cli, etc."
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
