@@ -8,10 +8,11 @@ module "repo_issues" {
 }
 
 module "repo_docs" {
-  source              = "./modules/common_repository"
-  name                = "docs"
-  description         = "General documentation for the AI in a Box project"
-  use_public_template = false
+  source                 = "./modules/common_repository"
+  name                   = "docs"
+  description            = "General documentation for the AI in a Box project"
+  use_public_template    = false
+  all_members_permission = "push"
 
   teams = [
     {
