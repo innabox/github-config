@@ -242,6 +242,7 @@ module "repo_enhancement_proposals" {
   name                   = "enhancement-proposals"
   description            = "A repository for proposing enhancements to the innabox project"
   all_members_permission = "push"
+  required_approvals     = 3
 }
 
 module "repo_fulfillment_common" {
