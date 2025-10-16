@@ -257,3 +257,16 @@ module "repo_fulfillment_common" {
     }
   ]
 }
+
+module "repo_osac_test_infra" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "osac-test-infra"
+  description = "Ansible-based test infrastructure for OSAC end-to-end testing"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
