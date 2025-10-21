@@ -192,7 +192,7 @@ module "repo_fulfillment_cli" {
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
@@ -253,7 +253,7 @@ module "repo_fulfillment_common" {
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
