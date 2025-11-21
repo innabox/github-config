@@ -270,3 +270,29 @@ module "repo_osac_test_infra" {
     }
   ]
 }
+
+module "repo_osac_templates" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "osac-templates"
+  description = "Ansible roles for base/generic templates."
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
+
+module "repo_massopenscloud_templates" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "osac-massopenscloud-templates"
+  description = "MOC Specific templates of OSAC."
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
