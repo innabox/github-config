@@ -275,7 +275,7 @@ module "repo_osac_templates" {
   source      = "./modules/common_repository"
   visibility  = "public"
   name        = "osac-templates"
-  description = "Ansible roles for base/generic templates."
+  description = "OSAC base templates"
   teams = [
     {
       team_id    = "fulfillment-wg"
@@ -284,11 +284,11 @@ module "repo_osac_templates" {
   ]
 }
 
-module "repo_massopenscloud_templates" {
+module "repo_massopencloud_templates" {
   source      = "./modules/common_repository"
   visibility  = "public"
-  name        = "osac-massopenscloud-templates"
-  description = "MOC Specific templates of OSAC."
+  name        = "osac-massopencloud-templates"
+  description = "OSAC MOC-specific templates"
   teams = [
     {
       team_id    = "fulfillment-wg"
