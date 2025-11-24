@@ -270,3 +270,29 @@ module "repo_osac_test_infra" {
     }
   ]
 }
+
+module "repo_osac_templates" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "osac-templates"
+  description = "OSAC base templates"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
+
+module "repo_massopencloud_templates" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "osac-massopencloud-templates"
+  description = "OSAC MOC-specific templates"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "push"
+    }
+  ]
+}
