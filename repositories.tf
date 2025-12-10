@@ -296,3 +296,16 @@ module "repo_massopencloud_templates" {
     }
   ]
 }
+
+module "repo_osac_ui" {
+  source      = "./modules/common_repository"
+  visibility  = "public"
+  name        = "osac-ui"
+  description = "OSAC UI Web Console"
+  teams = [
+    {
+      team_id    = "fulfillment-wg"
+      permission = "admin"
+    }
+  ]
+}
