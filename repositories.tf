@@ -223,7 +223,7 @@ module "repo_cloudkit_operator_config" {
   ]
 }
 
-module "repo_osac_installer" {
+module "repo_cloudkit_installer" {
   source      = "./modules/common_repository"
   visibility  = "public"
   name        = "osac-installer"
