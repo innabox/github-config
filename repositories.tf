@@ -25,14 +25,14 @@ module "repo_docs" {
 module "repo_dotgithub" {
   source              = "./modules/common_repository"
   name                = ".github"
-  description         = "Profile README for innabox organization"
+  description         = "Profile README for osac-project organization"
   use_public_template = false
 }
 
 module "repo_github_config" {
   source              = "./modules/common_repository"
   name                = "github-config"
-  description         = "Repository for managing innabox github organization"
+  description         = "Repository for managing osac-project github organization"
   use_public_template = false
   required_status_checks = [
     "pre-commit",
@@ -50,7 +50,7 @@ module "repo_dotgithub_private" {
   source      = "./modules/common_repository"
   visibility  = "private"
   name        = ".github-private"
-  description = "Member-only README for innabox organization"
+  description = "Member-only README for osac-project organization"
 }
 
 module "repo_public_template" {
@@ -223,13 +223,13 @@ module "repo_cloudkit_operator_config" {
   ]
 }
 
-module "repo_cloudkit_installer" {
+module "repo_osac_installer" {
   source      = "./modules/common_repository"
   visibility  = "public"
   name        = "osac-installer"
   description = "Integration repository for installing all OSAC components"
   teams = [
-    {
+  {
       team_id    = "fulfillment-wg"
       permission = "admin"
     }
@@ -240,7 +240,7 @@ module "repo_enhancement_proposals" {
   source                 = "./modules/common_repository"
   visibility             = "public"
   name                   = "enhancement-proposals"
-  description            = "A repository for proposing enhancements to the innabox project"
+  description            = "A repository for proposing enhancements to the osac project"
   all_members_permission = "push"
   required_approvals     = 3
 }

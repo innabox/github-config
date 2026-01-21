@@ -1,3 +1,3 @@
 provider "github" {
-  owner = "innabox"
+  owner = "osac-project"
 }

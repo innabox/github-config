@@ -17,7 +17,7 @@ resource "github_repository" "repo" {
     for_each = var.visibility == "private" ? [] : var.is_template ? [] : var.use_public_template ? ["enabled"] : []
 
     content {
-      owner      = "innabox"
+      owner      = "osac-project"
       repository = "public_template"
     }
   }
@@ -75,7 +75,7 @@ resource "github_branch_protection" "repo_protection" {
   require_signed_commits          = false
 
   force_push_bypassers = [
-    "innabox/org-admins",
+    "osac-project/org-admins",
   ]
 
   required_pull_request_reviews {
