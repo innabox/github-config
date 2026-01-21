@@ -223,15 +223,15 @@ module "repo_cloudkit_operator_config" {
   ]
 }
 
-module "repo_cloudkit_installer" {
+module "repo_osac_installer" {
   source      = "./modules/common_repository"
   visibility  = "public"
-  name        = "cloudkit-installer"
-  description = "Integration repository for installing all cloudkit components"
+  name        = "osac-installer"
+  description = "Integration repository for installing all OSAC components"
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
