@@ -266,7 +266,7 @@ module "repo_osac_test_infra" {
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
