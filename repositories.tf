@@ -39,13 +39,6 @@ module "repo_github_config" {
   ]
 }
 
-module "repo_hypershift_demo" {
-  source              = "./modules/common_repository"
-  name                = "hypershift-demo"
-  description         = "Scripts used for the hypershift demo"
-  use_public_template = false
-}
-
 module "repo_dotgithub_private" {
   source      = "./modules/common_repository"
   visibility  = "private"
@@ -62,45 +55,6 @@ module "repo_public_template" {
   is_template         = true
 }
 
-module "repo_fulfillment_wg" {
-  source      = "./modules/common_repository"
-  visibility  = "public"
-  name        = "fulfillment-wg"
-  description = "Workspace for the fulfillment working group"
-  teams = [
-    {
-      team_id    = "fulfillment-wg"
-      permission = "admin"
-    }
-  ]
-}
-
-module "repo_personas_wg" {
-  source      = "./modules/common_repository"
-  visibility  = "public"
-  name        = "personas-wg"
-  description = "Workspace for the personas working group"
-  teams = [
-    {
-      team_id    = "personas-wg"
-      permission = "push"
-    }
-  ]
-}
-
-module "repo_observability_wg" {
-  source      = "./modules/common_repository"
-  visibility  = "public"
-  name        = "observability-wg"
-  description = "Workspace for the observability working group"
-  teams = [
-    {
-      team_id    = "observability-wg"
-      permission = "push"
-    }
-  ]
-}
-
 module "repo_fulfillment_api" {
   source      = "./modules/common_repository"
   visibility  = "public"
@@ -115,6 +69,10 @@ module "repo_fulfillment_api" {
 
   pages = {
     build_type = "workflow"
+    source = {
+      branch = "main"
+      path   = "/"
+    }
   }
 }
 
@@ -229,7 +187,7 @@ module "repo_osac_installer" {
   name        = "osac-installer"
   description = "Integration repository for installing all OSAC components"
   teams = [
-  {
+    {
       team_id    = "fulfillment-wg"
       permission = "admin"
     }
