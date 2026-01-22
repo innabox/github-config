@@ -3,13 +3,17 @@ name: Apply configuration
 on:
   workflow_dispatch:
   schedule:
-  - cron: "17 */4 * * *"
+    - cron: "17 */4 * * *"
   push:
     paths:
       - "**/*.tf"
       - "**/*.csv"
     branches:
       - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
 
 jobs:
   apply:
@@ -20,20 +24,26 @@ jobs:
       TF_CLI_ARGS: "-no-color"
       TF_IN_AUTOMATION: "true"
     steps:
-    - uses: opentofu/setup-opentofu@v1
-      with:
-        tofu_wrapper: false
-    - uses: actions/checkout@v6
-    - run: ./ci/run-tofu-cmd.sh init
-
-    - name: Generate a token
-      id: generate-token
-      uses: actions/create-github-app-token@v2
-      with:
-        app-id: ${{ vars.CONFIG_APP_ID }}
-        private-key: ${{ secrets.CONFIG_APP_SECRET }}
-        owner: ${{ github.repository_owner }}
-
-    - run: ./ci/run-tofu-cmd.sh apply -concise -auto-approve
-      env:
-        GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - uses: actions/checkout@v6
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.CONFIG_APP_ID }}
+          private-key: ${{ secrets.CONFIG_APP_SECRET }}
+          owner: ${{ github.repository_owner }}
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_wrapper: false
+      - name: TF init
+        run: |
+          tofu init
+      - name: TF Validate
+        run: |
+          tofu validate
+      - name: TF Apply
+        run: |
+          tofu apply -concise -auto-approve
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
