@@ -6,7 +6,6 @@ variable "name" {
 variable "description" {
   description = "Repository description"
   type        = string
-  default     = ""
 }
 
 variable "required_approvals" {
