@@ -40,14 +40,6 @@ When a commit is pushed to the `main` branch (e.g., when a pull request merges),
     }
     ```
 
-### Add a new label to all managed repositories?
-
-1. Open `modules/common_repository/labels.csv`
-
-2. Add a new line of the form `<name>,<color>,<description>`
-
-Where `<repository_name_slug>` is `<repository_name>` transformed to be a valid identifier in most common languages: a single word consisting of only alphanumerics and underscores. So e.g. `github-config` would become `github_config`, and `.gitjub` would become something like `dotgithub` (`_github` would also work).
-
 This will create a new repository with the following configuration:
 
 - A repository with issues enabled and wikis and projects disabled
@@ -57,6 +49,14 @@ This will create a new repository with the following configuration:
 See the [README file for the common_repository module][common_repository] for more information about customizing repository configuration (including how to make a repository private and how to add collaborators).
 
 [common_repository]: ./modules/common_repository/
+
+### Add a new label to all managed repositories?
+
+1. Open `modules/common_repository/labels.csv`
+
+2. Add a new line of the form `<name>,<color>,<description>`
+
+Where `<repository_name_slug>` is `<repository_name>` transformed to be a valid identifier in most common languages: a single word consisting of only alphanumerics and underscores. So e.g. `github-config` would become `github_config`, and `.gitjub` would become something like `dotgithub` (`_github` would also work).
 
 ## Suggested local pre-commit checks
 
