@@ -119,12 +119,12 @@ module "repo_fulfillment_service" {
 module "repo_cloudkit_operator" {
   source      = "./modules/common_repository"
   visibility  = "public"
-  name        = "cloudkit-operator"
-  description = "Cloud-in-a-box kubernetes operator"
+  name        = "osac-operator"
+  description = "OSAC kubernetes operator"
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
@@ -132,12 +132,12 @@ module "repo_cloudkit_operator" {
 module "repo_cloudkit_aap" {
   source      = "./modules/common_repository"
   visibility  = "public"
-  name        = "cloudkit-aap"
-  description = "Cloud-in-a-box AAP configuration and playbooks"
+  name        = "osac-aap"
+  description = "OSAC AAP configuration and playbooks"
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
@@ -158,12 +158,12 @@ module "repo_fulfillment_cli" {
 module "repo_cloudkit_aap_ee" {
   source      = "./modules/common_repository"
   visibility  = "public"
-  name        = "cloudkit-aap-ee"
-  description = "Cloud-in-a-box execution environment for AAP"
+  name        = "osac-aap-ee"
+  description = "OSAC execution environment for AAP"
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
@@ -171,12 +171,12 @@ module "repo_cloudkit_aap_ee" {
 module "repo_cloudkit_operator_config" {
   source      = "./modules/common_repository"
   visibility  = "public"
-  name        = "cloudkit-operator-config"
-  description = "Configuration for our deployment of the cloudkit-operator"
+  name        = "osac-operator-config"
+  description = "Configuration for our deployment of the OSAC operator"
   teams = [
     {
       team_id    = "fulfillment-wg"
-      permission = "push"
+      permission = "admin"
     }
   ]
 }
