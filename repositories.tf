@@ -414,3 +414,8 @@ module "repo_osac_metering" {
   push_allowances    = ["/openshift-merge-robot", "osac-project/wg-infra", "osac-project/org-admins"]
   environments       = [{ name = "e2e-test" }]
 }
+
+moved {
+  from = module.repo_osac_metering_service
+  to   = module.repo_osac_metering
+}
