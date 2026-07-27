@@ -391,11 +391,11 @@ module "repo_osac_csi_driver" {
   environments       = [{ name = "e2e-test" }]
 }
 
-module "repo_osac_metering_service" {
+module "repo_osac_metering" {
   source      = "./modules/common_repository"
   visibility  = "public"
-  name        = "osac-metering-service"
-  description = "OSAC metering service"
+  name        = "osac-metering"
+  description = "OSAC metering service, installation chart and provider adapters"
   teams = [
     {
       team_id    = "fulfillment-wg"
