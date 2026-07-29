@@ -125,7 +125,7 @@ module "repo_osac" {
   source      = "./modules/common_repository"
   visibility  = "public"
   name        = "osac"
-  description = "OSAC mono-repo (OSAC-1732): consolidates fulfillment-service, osac-operator, osac-aap, and osac-installer"
+  description = "OSAC mono-repo: consolidates fulfillment-service, osac-operator, osac-aap, and osac-installer"
   teams = [
     {
       team_id    = "fulfillment-wg"
@@ -137,13 +137,13 @@ module "repo_osac" {
     }
   ]
   required_approvals = null
-  # No required_status_checks yet -- the mono-repo's CI (OSAC-1734) doesn't exist
-  # until content is merged in. Add checks here once that CI is built, following
-  # the same pattern as repo_fulfillment_service/repo_cloudkit_operator above.
+  # No required_status_checks yet -- the mono-repo's CI doesn't exist until
+  # content is merged in. Add checks here once that CI is built, following the
+  # same pattern as repo_fulfillment_service/repo_cloudkit_operator above.
   required_status_checks = []
-  # OSAC-1732 constraint: preserve subtree-merge history/blame going forward --
-  # squash-merging on the mono-repo would collapse that history for every
-  # commit after cutover, so it's disabled at the GitHub level, not just by convention.
+  # Preserve subtree-merge history/blame going forward -- squash-merging on the
+  # mono-repo would collapse that history for every commit after cutover, so
+  # it's disabled at the GitHub level, not just by convention.
   allow_squash_merge      = false
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
   push_allowances         = ["/openshift-merge-robot", "osac-project/wg-infra", "osac-project/org-admins"]
