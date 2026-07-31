@@ -223,6 +223,11 @@ module "repo_cloudkit_aap_ee" {
       permission = "push"
     }
   ]
+  # Dead repo: only 2 commits (both from creation day), superseded within days by
+  # osac-aap's own execution-environment/ directory, which has been the actively
+  # maintained source of the same-named image ever since. Nothing consumes this
+  # standalone repo -- no CI publishes it, no image references it.
+  archived = true
 }
 
 module "repo_cloudkit_operator_config" {
