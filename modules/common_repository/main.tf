@@ -77,6 +77,7 @@ resource "github_branch_protection" "repo_protection" {
   enforce_admins                  = false
   require_conversation_resolution = false
   require_signed_commits          = false
+  lock_branch                     = var.lock_branch
 
   force_push_bypassers = [
     "osac-project/org-admins",

@@ -45,6 +45,12 @@ variable "branch_protection" {
   default     = true
 }
 
+variable "lock_branch" {
+  description = "Make the protected branch read-only, blocking all pushes. Intended for repositories that have been merged into another repo and are pending archival."
+  type        = bool
+  default     = false
+}
+
 variable "labels" {
   description = "List of labels to configure on the repository"
   type = list(object({
