@@ -188,6 +188,11 @@ module "repo_cloudkit_aap" {
   visibility  = "public"
   name        = "osac-aap"
   description = "OSAC AAP configuration and playbooks"
+  # Merged into osac (OSAC-1732/OSAC-1733); locked read-only pending archival
+  # (OSAC-1737). Managed here, not just via a one-off API call, since this
+  # repo's Terraform auto-apply would otherwise silently revert an
+  # out-of-band lock back to unlocked on its next run.
+  lock_branch = true
   teams = [
     {
       team_id    = "fulfillment-wg"
