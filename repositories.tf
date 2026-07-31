@@ -95,6 +95,11 @@ module "repo_fulfillment_service" {
   visibility  = "public"
   name        = "fulfillment-service"
   description = "Cloud-in-a-box fulfillment service"
+  # Merged into osac (OSAC-1732/OSAC-1733); locked read-only pending archival
+  # (OSAC-1737). Managed here, not just via a one-off API call, since this
+  # repo's Terraform auto-apply would otherwise silently revert an
+  # out-of-band lock back to unlocked on its next run.
+  lock_branch = true
   teams = [
     {
       team_id    = "fulfillment-wg"
@@ -154,6 +159,11 @@ module "repo_cloudkit_operator" {
   visibility  = "public"
   name        = "osac-operator"
   description = "OSAC kubernetes operator"
+  # Merged into osac (OSAC-1732/OSAC-1733); locked read-only pending archival
+  # (OSAC-1737). Managed here, not just via a one-off API call, since this
+  # repo's Terraform auto-apply would otherwise silently revert an
+  # out-of-band lock back to unlocked on its next run.
+  lock_branch = true
   teams = [
     {
       team_id    = "fulfillment-wg"
