@@ -379,6 +379,10 @@ module "repo_bare_metal_operator" {
     }
   ]
   push_allowances = ["/openshift-merge-robot", "osac-project/wg-infra", "osac-project/org-admins"]
+  # Frozen ahead of OSAC-3395's merge into the osac mono-repo -- same pattern
+  # as fulfillment-service/osac-operator/osac-aap. A one-off `gh api` toggle
+  # alone reverts on the next Terraform apply cycle without this.
+  lock_branch = true
 }
 
 module "repo_osac_workspace" {
