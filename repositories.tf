@@ -142,10 +142,15 @@ module "repo_osac" {
     }
   ]
   required_approvals = null
-  # No required_status_checks yet -- the mono-repo's CI doesn't exist until
-  # content is merged in. Add checks here once that CI is built, following the
-  # same pattern as repo_fulfillment_service/repo_cloudkit_operator above.
-  required_status_checks = []
+  # osac's own CI (all 3 e2e install flavors) is live and has been passing on
+  # real PRs for a while now -- require all 3, not just vmaas like the
+  # pre-merge component repos below, since this is now the repo everything
+  # actually merges into.
+  required_status_checks = [
+    { context = "e2e-vmaas-full-install / e2e", integration_id = 15368 },
+    { context = "e2e-bmaas-full-install / e2e", integration_id = 15368 },
+    { context = "e2e-caas-full-install / e2e", integration_id = 15368 },
+  ]
   # Preserve subtree-merge history/blame going forward -- squash-merging on the
   # mono-repo would collapse that history for every commit after cutover, so
   # it's disabled at the GitHub level, not just by convention.
