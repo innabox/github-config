@@ -267,6 +267,11 @@ module "repo_osac_installer" {
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
   push_allowances         = ["/openshift-merge-robot", "osac-project/wg-infra", "osac-project/org-admins"]
   environments            = [{ name = "e2e-test" }]
+  # Frozen ahead of its merge into the osac mono-repo -- same pattern as
+  # fulfillment-service/osac-operator/osac-aap/bare-metal-fulfillment-operator.
+  # A one-off `gh api` toggle alone reverts on the next Terraform apply cycle
+  # without this.
+  lock_branch = true
 }
 
 module "repo_enhancement_proposals" {
