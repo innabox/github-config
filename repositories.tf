@@ -95,10 +95,8 @@ module "repo_fulfillment_service" {
   visibility  = "public"
   name        = "fulfillment-service"
   description = "Cloud-in-a-box fulfillment service"
-  # Merged into osac (OSAC-1732/OSAC-1733); locked read-only pending archival
-  # (OSAC-1737). Managed here, not just via a one-off API call, since this
-  # repo's Terraform auto-apply would otherwise silently revert an
-  # out-of-band lock back to unlocked on its next run.
+  # Merged into osac mono-repo (OSAC-1732/OSAC-1733); archived (OSAC-1737).
+  archived    = true
   lock_branch = true
   teams = [
     {
@@ -164,10 +162,8 @@ module "repo_cloudkit_operator" {
   visibility  = "public"
   name        = "osac-operator"
   description = "OSAC kubernetes operator"
-  # Merged into osac (OSAC-1732/OSAC-1733); locked read-only pending archival
-  # (OSAC-1737). Managed here, not just via a one-off API call, since this
-  # repo's Terraform auto-apply would otherwise silently revert an
-  # out-of-band lock back to unlocked on its next run.
+  # Merged into osac mono-repo (OSAC-1732/OSAC-1733); archived (OSAC-1737).
+  archived    = true
   lock_branch = true
   teams = [
     {
@@ -193,10 +189,8 @@ module "repo_cloudkit_aap" {
   visibility  = "public"
   name        = "osac-aap"
   description = "OSAC AAP configuration and playbooks"
-  # Merged into osac (OSAC-1732/OSAC-1733); locked read-only pending archival
-  # (OSAC-1737). Managed here, not just via a one-off API call, since this
-  # repo's Terraform auto-apply would otherwise silently revert an
-  # out-of-band lock back to unlocked on its next run.
+  # Merged into osac mono-repo (OSAC-1732/OSAC-1733); archived (OSAC-1737).
+  archived    = true
   lock_branch = true
   teams = [
     {
@@ -248,6 +242,9 @@ module "repo_osac_installer" {
   visibility  = "public"
   name        = "osac-installer"
   description = "Integration repository for installing all OSAC components"
+  # Merged into osac mono-repo (OSAC-1732/OSAC-1733); archived (OSAC-1737).
+  archived    = true
+  lock_branch = true
   teams = [
     {
       team_id    = "fulfillment-wg"
@@ -267,11 +264,6 @@ module "repo_osac_installer" {
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
   push_allowances         = ["/openshift-merge-robot", "osac-project/wg-infra", "osac-project/org-admins"]
   environments            = [{ name = "e2e-test" }]
-  # Frozen ahead of its merge into the osac mono-repo -- same pattern as
-  # fulfillment-service/osac-operator/osac-aap/bare-metal-fulfillment-operator.
-  # A one-off `gh api` toggle alone reverts on the next Terraform apply cycle
-  # without this.
-  lock_branch = true
 }
 
 module "repo_enhancement_proposals" {
@@ -373,6 +365,9 @@ module "repo_bare_metal_operator" {
   visibility  = "public"
   name        = "bare-metal-fulfillment-operator"
   description = "OSAC Operator for Bare Metal Fulfillment"
+  # Merged into osac mono-repo (OSAC-1732/OSAC-3395); archived (OSAC-1737).
+  archived    = true
+  lock_branch = true
   teams = [
     {
       team_id    = "fulfillment-wg"
@@ -384,10 +379,6 @@ module "repo_bare_metal_operator" {
     }
   ]
   push_allowances = ["/openshift-merge-robot", "osac-project/wg-infra", "osac-project/org-admins"]
-  # Frozen ahead of OSAC-3395's merge into the osac mono-repo -- same pattern
-  # as fulfillment-service/osac-operator/osac-aap. A one-off `gh api` toggle
-  # alone reverts on the next Terraform apply cycle without this.
-  lock_branch = true
 }
 
 module "repo_osac_workspace" {
@@ -433,10 +424,8 @@ module "repo_osac_csi_driver" {
   visibility  = "public"
   name        = "osac-csi-driver"
   description = "OSAC CSI driver for persistent storage"
-  # Merged into osac (OSAC-1732/OSAC-3530); locked read-only pending archival
-  # (OSAC-1737). Managed here, not just via a one-off API call, since this
-  # repo's Terraform auto-apply would otherwise silently revert an
-  # out-of-band lock back to unlocked on its next run.
+  # Merged into osac mono-repo (OSAC-1732/OSAC-3530); archived (OSAC-1737).
+  archived    = true
   lock_branch = true
   teams = [
     {
