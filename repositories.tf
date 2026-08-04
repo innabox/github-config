@@ -351,7 +351,10 @@ module "repo_host_management_openstack" {
   source      = "./modules/common_repository"
   visibility  = "public"
   name        = "host-management-openstack"
-  description = "OSAC Host Management Operator for OpenStack"
+  description = "[Archived] OSAC Host Management Operator for OpenStack"
+  # archived (OSAC-3445)
+  archived    = true
+  lock_branch = true
   teams = [
     {
       team_id    = "fulfillment-wg"
