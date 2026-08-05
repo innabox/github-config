@@ -35,6 +35,14 @@ concurrency:
   # is always serialized against every other.
   group: ${{ github.workflow }}
   cancel-in-progress: false
+  # Default queue behavior only keeps the single most-recently-queued run
+  # pending in a group -- an older pending run gets canceled and replaced.
+  # A manual one-time recovery run (state rm, or the exclude_addresses
+  # escape hatch) dispatched while a scheduled/push run is in progress
+  # could get silently dropped and replaced by the next automatic trigger
+  # before it ever executes. queue: max keeps every pending run queued
+  # (up to GitHub's cap of 100) instead of dropping older ones.
+  queue: max
 
 jobs:
   apply:
@@ -87,10 +95,13 @@ jobs:
       - name: TF State Remove (one-time, manual only)
         if: inputs.state_rm_addresses != ''
         run: |
+          if [[ "${STATE_RM_ADDRESSES}" == *$'\n'* ]]; then
+            echo "::error::state_rm_addresses must be comma-separated on a single line, not newline-separated." >&2
+            exit 1
+          fi
           IFS=',' read -ra ADDRS <<< "${STATE_RM_ADDRESSES}"
           tofu state rm "${ADDRS[@]}"
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           STATE_RM_ADDRESSES: ${{ inputs.state_rm_addresses }}
       - name: TF Apply
         run: |
