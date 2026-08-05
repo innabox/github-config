@@ -104,11 +104,17 @@ jobs:
             exit 1
           fi
           IFS=',' read -ra ADDRS <<< "${STATE_RM_ADDRESSES}"
-          for addr in "${ADDRS[@]}"; do
+          for i in "${!ADDRS[@]}"; do
+            addr="${ADDRS[$i]}"
+            # Trim surrounding whitespace, since "addr1, addr2" (space after
+            # the comma) is the natural way to type this list by hand.
+            addr="${addr#"${addr%%[![:space:]]*}"}"
+            addr="${addr%"${addr##*[![:space:]]}"}"
             if [[ -z "${addr}" || "${addr}" == -* ]]; then
               echo "::error::invalid resource address '${addr}' -- addresses must be non-empty and cannot start with '-' (tofu would parse it as an option)." >&2
               exit 1
             fi
+            ADDRS[$i]="${addr}"
           done
           tofu state rm "${ADDRS[@]}"
         env:
