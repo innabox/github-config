@@ -147,7 +147,7 @@ module "repo_osac" {
   required_status_checks = [
     { context = "e2e-vmaas-full-install / e2e", integration_id = 15368 },
     { context = "e2e-bmaas-full-install / e2e", integration_id = 15368 },
-    { context = "e2e-caas-netris-full-install / e2e", integration_id = 15368 },
+    { context = "e2e-caas-full-install / e2e", integration_id = 15368 },
   ]
   # Preserve subtree-merge history/blame going forward -- squash-merging on the
   # mono-repo would collapse that history for every commit after cutover, so
