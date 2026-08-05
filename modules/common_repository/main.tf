@@ -101,6 +101,28 @@ resource "github_branch_protection" "repo_protection" {
     }
   }
 
+  # Prow's tide only derives its own merge-gating required contexts from
+  # this (classic) branch-protection API -- it has no knowledge of
+  # repository rulesets at all (confirmed against tide's actual source,
+  # pkg/config/tide.go: FromBranchProtection reads bp.RequiredStatusChecks,
+  # which maps to this exact API, not rulesets). Since every repo here
+  # already relies on org-wide tide.context_options.from-branch-protection
+  # (the global default in openshift/release, no per-repo override), tide
+  # was merging PRs on labels alone the moment none of these contexts were
+  # ever mirrored here -- confirmed on a real PR (#85) that merged with all
+  # 3 required e2e checks still 50+ minutes from completing. Mirror the
+  # same contexts already enforced by the ruleset below so tide actually
+  # waits, without introducing a second, independently-maintained list --
+  # both come from the same var.required_status_checks.
+  dynamic "required_status_checks" {
+    for_each = length(var.required_status_checks) > 0 ? [1] : []
+
+    content {
+      strict   = true
+      contexts = [for check in var.required_status_checks : check.context]
+    }
+  }
+
   depends_on = [github_repository.repo, github_repository_collaborators.repo_collaborators]
 }
 
