@@ -25,7 +25,15 @@ on:
       - main
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # This workflow has no pull_request trigger, so github.event.pull_request.number
+  # is always null here -- the group key collapsed to just github.ref in
+  # practice, which only serializes runs against the same ref. A manual
+  # workflow_dispatch run (e.g. one-time state rm) dispatched against a
+  # non-default ref could then run concurrently with a scheduled/push apply
+  # against main, racing on the same remote state. Use a single, unqualified
+  # group so every run of this workflow -- manual or automatic, any ref --
+  # is always serialized against every other.
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
@@ -79,12 +87,11 @@ jobs:
       - name: TF State Remove (one-time, manual only)
         if: inputs.state_rm_addresses != ''
         run: |
-          IFS=',' read -ra ADDRS <<< "${{ inputs.state_rm_addresses }}"
-          for addr in "${ADDRS[@]}"; do
-            tofu state rm "$addr"
-          done
+          IFS=',' read -ra ADDRS <<< "${STATE_RM_ADDRESSES}"
+          tofu state rm "${ADDRS[@]}"
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          STATE_RM_ADDRESSES: ${{ inputs.state_rm_addresses }}
       - name: TF Apply
         run: |
           tofu apply -concise -auto-approve
