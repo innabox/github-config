@@ -1,0 +1,21 @@
+name: Diag list org fine-grained permissions
+on:
+  workflow_dispatch: {}
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: Iv23lipEOAvwk5QqNUie
+          private-key: ${{ secrets.CONFIG_APP_SECRET }}
+          owner: ${{ github.repository_owner }}
+      - name: List org fine-grained permissions
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          gh api orgs/osac-project/organization-fine-grained-permissions | tee /tmp/perms.json
+          echo "### Runner-related permissions" >> "$GITHUB_STEP_SUMMARY"
+          jq -r '.[] | select(.description | test("runner"; "i")) | "- `\(.name)`: \(.description)"' /tmp/perms.json >> "$GITHUB_STEP_SUMMARY"
