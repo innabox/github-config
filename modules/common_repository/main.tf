@@ -28,7 +28,8 @@ resource "github_repository" "repo" {
 
   dynamic "pages" {
     # enable this block if `pages` is not null
-    for_each = var.pages[*]
+    # Skip pages config for archived repos (GitHub rejects it with 409)
+    for_each = var.archived ? [] : var.pages[*]
 
     content {
       cname      = pages.value.cname
@@ -51,7 +52,8 @@ resource "github_issue_label" "repo_labels" {
 
   # Generate label blocks from the value of local.values, which by default is initialized
   # by the contents of the "labels.csv" file.
-  for_each = {
+  # Skip labels for archived repos (GitHub rejects writes with 409)
+  for_each = var.archived ? {} : {
     for label in local.labels :
     label.name => label
   }
@@ -65,8 +67,9 @@ resource "github_issue_label" "repo_labels" {
 
 resource "github_branch_protection" "repo_protection" {
   # This odd looking construct lets us control the creation of the
-  # branch protection resource with a boolean variable.
-  count = var.visibility == "private" ? 0 : var.branch_protection ? 1 : 0
+  # branch protection resource with a boolean variable, and skip it
+  # entirely for archived repos (GitHub rejects writes with 409).
+  count = var.visibility == "private" ? 0 : var.archived ? 0 : var.branch_protection ? 1 : 0
 
   repository_id = var.name
   pattern       = "main"
@@ -98,11 +101,26 @@ resource "github_branch_protection" "repo_protection" {
     }
   }
 
+  # Prow's tide derives its merge-gating required contexts only from this
+  # (classic) branch-protection API, not from rulesets (pkg/config/tide.go:
+  # FromBranchProtection reads bp.RequiredStatusChecks). This field was
+  # never set here, so tide merged on labels alone, blind to e2e status.
+  # Mirror the same contexts already enforced by the ruleset below, from
+  # the same var.required_status_checks, so there's one list to maintain.
+  dynamic "required_status_checks" {
+    for_each = length(var.required_status_checks) > 0 ? [1] : []
+
+    content {
+      strict   = true
+      contexts = [for check in var.required_status_checks : check.context]
+    }
+  }
+
   depends_on = [github_repository.repo, github_repository_collaborators.repo_collaborators]
 }
 
 resource "github_repository_ruleset" "status_checks" {
-  count = var.visibility == "private" ? 0 : var.branch_protection && length(var.required_status_checks) > 0 ? 1 : 0
+  count = var.visibility == "private" ? 0 : var.archived ? 0 : var.branch_protection && length(var.required_status_checks) > 0 ? 1 : 0
 
   name        = "ci-status-checks"
   repository  = github_repository.repo.name
@@ -164,7 +182,8 @@ resource "github_repository_ruleset" "status_checks" {
 }
 
 resource "github_repository_environment" "env" {
-  for_each = {
+  # Skip environments for archived repos (GitHub rejects writes with 409)
+  for_each = var.archived ? {} : {
     for env in var.environments :
     env.name => env
   }

@@ -11,6 +11,14 @@ on:
         description: "One-time: import ID for the resource above (e.g. the repo name for github_repository)."
         required: false
         default: ""
+      state_rm_addresses:
+        description: "One-time: comma-separated Terraform resource addresses to remove from state (e.g. for a member who left the org and whose resource can no longer be refreshed). Leave empty for a normal apply."
+        required: false
+        default: ""
+      exclude_addresses:
+        description: "One-time: comma-separated Terraform resource addresses to exclude from this apply (e.g. a resource that's known-broken and blocking every other pending change atomically, while a permanent fix is prepared). Leave empty for a normal apply."
+        required: false
+        default: ""
   schedule:
     - cron: "17 */4 * * *"
   push:
@@ -21,8 +29,24 @@ on:
       - main
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # This workflow has no pull_request trigger, so github.event.pull_request.number
+  # is always null here -- the group key collapsed to just github.ref in
+  # practice, which only serializes runs against the same ref. A manual
+  # workflow_dispatch run (e.g. one-time state rm) dispatched against a
+  # non-default ref could then run concurrently with a scheduled/push apply
+  # against main, racing on the same remote state. Use a single, unqualified
+  # group so every run of this workflow -- manual or automatic, any ref --
+  # is always serialized against every other.
+  group: ${{ github.workflow }}
   cancel-in-progress: false
+  # Default queue behavior only keeps the single most-recently-queued run
+  # pending in a group -- an older pending run gets canceled and replaced.
+  # A manual one-time recovery run (state rm, or the exclude_addresses
+  # escape hatch) dispatched while a scheduled/push run is in progress
+  # could get silently dropped and replaced by the next automatic trigger
+  # before it ever executes. queue: max keeps every pending run queued
+  # (up to GitHub's cap of 100) instead of dropping older ones.
+  queue: max
 
 jobs:
   apply:
@@ -64,8 +88,111 @@ jobs:
           tofu import "${{ inputs.import_address }}" "${{ inputs.import_id }}"
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-      - name: TF Apply
+      # Handles a resource whose live state can no longer be refreshed (e.g.
+      # a github_membership/github_team_membership for a user who left the
+      # org, which errors on read instead of just reporting "gone") --
+      # refresh failures like this abort the whole apply before anything
+      # else in the plan can land, atomically, even resources unrelated to
+      # the broken one. Manual, one-time use via workflow_dispatch input; a
+      # no-op (skipped entirely) for the normal scheduled/push triggers,
+      # which never set this input.
+      - name: TF State Remove (one-time, manual only)
+        if: inputs.state_rm_addresses != ''
         run: |
-          tofu apply -concise -auto-approve
+          if [[ "${STATE_RM_ADDRESSES}" == *$'\n'* ]]; then
+            echo "::error::state_rm_addresses must be comma-separated on a single line, not newline-separated." >&2
+            exit 1
+          fi
+          IFS=',' read -ra ADDRS <<< "${STATE_RM_ADDRESSES}"
+          for i in "${!ADDRS[@]}"; do
+            addr="${ADDRS[$i]}"
+            # Trim surrounding whitespace, since "addr1, addr2" (space after
+            # the comma) is the natural way to type this list by hand.
+            addr="${addr#"${addr%%[![:space:]]*}"}"
+            addr="${addr%"${addr##*[![:space:]]}"}"
+            if [[ -z "${addr}" || "${addr}" == -* ]]; then
+              echo "::error::invalid resource address '${addr}' -- addresses must be non-empty and cannot start with '-' (tofu would parse it as an option)." >&2
+              exit 1
+            fi
+            ADDRS[$i]="${addr}"
+          done
+          tofu state rm "${ADDRS[@]}"
+        env:
+          STATE_RM_ADDRESSES: ${{ inputs.state_rm_addresses }}
+      # A one-time, manual escape hatch: a single broken/unrefreshable
+      # resource aborts this entire apply atomically (see #162, #165 for two
+      # real instances), silently blocking every other repo's pending
+      # changes until someone happens to notice. -exclude lets a maintainer
+      # immediately unblock everyone else while the permanent fix for the
+      # broken resource is prepared, without giving up dependency-complete
+      # single-pass apply for the normal case. A no-op for the normal
+      # scheduled/push triggers, which never set this input.
+      #
+      # A permanent per-module `-target` loop was considered and rejected:
+      # several modules share cross-module resources (e.g.
+      # github_team.all["wg-infra"], referenced by ruleset_bypass_team_ids
+      # in multiple repo modules), so looping per module would re-plan/
+      # re-apply those shared resources on every iteration that references
+      # them -- wasteful, and it gives up Terraform's normal whole-graph
+      # dependency ordering for no real isolation benefit in the common
+      # case where nothing is broken. -exclude only sacrifices ordering
+      # guarantees for the specific resources a maintainer has deliberately
+      # chosen to skip, one time -- note that -exclude also skips anything
+      # that depends on the excluded resource, so it unblocks everything
+      # *not* downstream of the broken one, not literally everything else.
+      - name: TF Apply
+        id: tofu_apply
+        run: |
+          EXCLUDE_ARGS=()
+          if [[ -n "${EXCLUDE_ADDRESSES}" ]]; then
+            if [[ "${EXCLUDE_ADDRESSES}" == *$'\n'* ]]; then
+              echo "::error::exclude_addresses must be comma-separated on a single line, not newline-separated." >&2
+              exit 1
+            fi
+            IFS=',' read -ra ADDRS <<< "${EXCLUDE_ADDRESSES}"
+            for addr in "${ADDRS[@]}"; do
+              # Trim surrounding whitespace, since "addr1, addr2" (space after
+              # the comma) is the natural way to type this list by hand.
+              addr="${addr#"${addr%%[![:space:]]*}"}"
+              addr="${addr%"${addr##*[![:space:]]}"}"
+              if [[ -z "${addr}" || "${addr}" == -* ]]; then
+                echo "::error::invalid resource address '${addr}' -- addresses must be non-empty and cannot start with '-' (tofu would parse it as an option)." >&2
+                exit 1
+              fi
+              EXCLUDE_ARGS+=("-exclude=${addr}")
+            done
+          fi
+          tofu apply -concise -auto-approve "${EXCLUDE_ARGS[@]}"
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          EXCLUDE_ADDRESSES: ${{ inputs.exclude_addresses }}
+      # tofu apply isn't atomic and doesn't roll back changes already
+      # applied earlier in the same run if a later resource fails -- but a
+      # hard error on one resource does still stop the run before anything
+      # after it in the plan is attempted, which is what actually blocked
+      # every other repo's pending changes here (the host-management-
+      # openstack archived-repo bug, #165) with no signal beyond a red
+      # Actions run. File or update a tracking issue so a stuck apply is
+      # never silent again. Scoped to TF Apply's own outcome specifically
+      # (not the broader failure() built-in, which would also match an
+      # earlier checkout/init/validate/import failure).
+      - name: File an issue on apply failure
+        if: ${{ failure() && steps.tofu_apply.outcome == 'failure' }}
+        env:
+          # Only gh + GITHUB_TOKEN are needed here -- explicitly clear the
+          # job-level AWS backend credentials rather than let this step
+          # inherit them unnecessarily.
+          AWS_ACCESS_KEY_ID: ""
+          AWS_SECRET_ACCESS_KEY: ""
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create apply-failure --repo "${{ github.repository }}" \
+            --color d73a4a --description "tofu apply is failing" --force
+          EXISTING=$(gh issue list --repo "${{ github.repository }}" --label apply-failure --state open --json number --jq '.[0].number')
+          BODY="\`tofu apply\` failed at ${RUN_URL}. This blocks *every* repo's pending Terraform changes until resolved -- see the run log for which resource caused it."
+          if [[ -n "${EXISTING}" ]]; then
+            gh issue comment "${EXISTING}" --repo "${{ github.repository }}" --body "${BODY}"
+          else
+            gh issue create --repo "${{ github.repository }}" --title "Apply configuration is failing" --label apply-failure --body "${BODY}"
+          fi
