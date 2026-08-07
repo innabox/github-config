@@ -20,7 +20,7 @@ on:
         required: false
         default: ""
       list_org_fine_grained_permissions:
-        description: "One-time: set to 'true' to print the org's live custom-role fine-grained permission names to the job summary (e.g. to find the exact permission string for a github_organization_role, since GitHub's docs only show UI labels, not identifiers). Read-only, runs before TF Apply. Leave empty for a normal apply."
+        description: "One-time: set to 'true' to print the org's live custom-role fine-grained permission names to the job summary (e.g. to find the exact permission string for a github_organization_role, since GitHub's docs only show UI labels, not identifiers). Read-only: skips TF Import/TF State Remove/TF Apply for this run. Leave empty for a normal apply."
         required: false
         default: ""
   schedule:
@@ -80,6 +80,11 @@ jobs:
       - name: List org fine-grained permissions (one-time, manual only)
         if: inputs.list_org_fine_grained_permissions == 'true'
         env:
+          # Only gh + GITHUB_TOKEN are needed here -- explicitly clear the
+          # job-level AWS backend credentials rather than let this step
+          # inherit them unnecessarily.
+          AWS_ACCESS_KEY_ID: ""
+          AWS_SECRET_ACCESS_KEY: ""
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           gh api "orgs/${{ github.repository_owner }}/organization-fine-grained-permissions" > /tmp/org-perms.json
@@ -108,7 +113,7 @@ jobs:
       # inputs; a no-op (skipped entirely) for the normal scheduled/push
       # triggers, which never set these inputs.
       - name: TF Import (one-time, manual only)
-        if: inputs.import_address != ''
+        if: inputs.import_address != '' && inputs.list_org_fine_grained_permissions != 'true'
         run: |
           tofu import "${{ inputs.import_address }}" "${{ inputs.import_id }}"
         env:
@@ -122,7 +127,7 @@ jobs:
       # no-op (skipped entirely) for the normal scheduled/push triggers,
       # which never set this input.
       - name: TF State Remove (one-time, manual only)
-        if: inputs.state_rm_addresses != ''
+        if: inputs.state_rm_addresses != '' && inputs.list_org_fine_grained_permissions != 'true'
         run: |
           if [[ "${STATE_RM_ADDRESSES}" == *$'\n'* ]]; then
             echo "::error::state_rm_addresses must be comma-separated on a single line, not newline-separated." >&2
@@ -167,6 +172,7 @@ jobs:
       # *not* downstream of the broken one, not literally everything else.
       - name: TF Apply
         id: tofu_apply
+        if: inputs.list_org_fine_grained_permissions != 'true'
         run: |
           EXCLUDE_ARGS=()
           if [[ -n "${EXCLUDE_ADDRESSES}" ]]; then
