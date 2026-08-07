@@ -19,7 +19,7 @@ resource "github_organization_role" "runner_manager" {
   description = "Manage organization self-hosted runners and runner groups"
 
   permissions = [
-    "manage_organization_runners",
+    "write_organization_runners_and_runner_groups",
   ]
 }
 
