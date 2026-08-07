@@ -94,7 +94,7 @@ jobs:
             echo
             echo "### Runner-related"
             jq -r '.[] | select(.description | test("runner"; "i")) | "- `\(.name)`: \(.description)"' /tmp/org-perms.json
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Setup OpenTofu
         uses: opentofu/setup-opentofu@v2
         with:
