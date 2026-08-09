@@ -144,9 +144,9 @@ module "repo_osac" {
   # check for the merge queue.
   required_approvals = null
   required_status_checks = [
-    { context = "e2e-vmaas-full-install / e2e", integration_id = 15368 },
-    { context = "e2e-bmaas-full-install / e2e", integration_id = 15368 },
-    { context = "e2e-caas-full-install / e2e", integration_id = 15368 },
+    { context = "e2e-vmaas-gate", integration_id = 15368 },
+    { context = "e2e-bmaas-gate", integration_id = 15368 },
+    { context = "e2e-caas-gate", integration_id = 15368 },
     # Reads Prow-set labels (lgtm, approved, jira/valid-reference) and converts
     # them to a status check the merge queue can gate on.
     { context = "check-labels", integration_id = 15368 },
