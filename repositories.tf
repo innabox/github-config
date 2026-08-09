@@ -149,7 +149,7 @@ module "repo_osac" {
     { context = "e2e-caas-full-install / e2e", integration_id = 15368 },
     # Reads Prow-set labels (lgtm, approved, jira/valid-reference) and converts
     # them to a status check the merge queue can gate on.
-    { context = "label-gate / check-labels", integration_id = 15368 },
+    { context = "check-labels", integration_id = 15368 },
   ]
   # Preserve subtree-merge history/blame going forward -- squash-merging on the
   # mono-repo would collapse that history for every commit after cutover, so
