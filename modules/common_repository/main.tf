@@ -101,20 +101,6 @@ resource "github_branch_protection" "repo_protection" {
     }
   }
 
-  # Prow's tide derives its merge-gating required contexts only from this
-  # (classic) branch-protection API, not from rulesets (pkg/config/tide.go:
-  # FromBranchProtection reads bp.RequiredStatusChecks). This field was
-  # never set here, so tide merged on labels alone, blind to e2e status.
-  # Mirror the same contexts already enforced by the ruleset below, from
-  # the same var.required_status_checks, so there's one list to maintain.
-  dynamic "required_status_checks" {
-    for_each = length(var.required_status_checks) > 0 ? [1] : []
-
-    content {
-      strict   = true
-      contexts = [for check in var.required_status_checks : check.context]
-    }
-  }
 
   depends_on = [github_repository.repo, github_repository_collaborators.repo_collaborators]
 }
