@@ -156,12 +156,15 @@ module "repo_osac" {
   # it's disabled at the GitHub level, not just by convention.
   allow_squash_merge      = false
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
-  # openshift-merge-robot removed: Tide no longer merges; merge queue handles it.
-  push_allowances = ["osac-project/wg-infra", "osac-project/org-admins"]
+  # push_allowances removed: classic branch protection's "Restrict who can push"
+  # overrides the merge queue bot's implicit push access and cannot include it
+  # (the bot is an internal GitHub app with no discoverable slug). The ruleset's
+  # merge_queue rule prevents unauthorized merges; force_push_bypassers (above)
+  # controls force pushes.
 
   merge_queue = {
     merge_method                      = "REBASE"
-    max_entries_to_build              = 3
+    max_entries_to_build              = 4
     max_entries_to_merge              = 5
     min_entries_to_merge              = 1
     min_entries_to_merge_wait_minutes = 5
