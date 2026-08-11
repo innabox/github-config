@@ -38,11 +38,16 @@ module "repo_github_config" {
   required_status_checks = [
     { context = "pre-commit", integration_id = 15368 },
   ]
+  ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
 
   teams = [
     {
       team_id    = "fulfillment-wg"
       permission = "push"
+    },
+    {
+      team_id    = "wg-infra"
+      permission = "admin"
     }
   ]
 }
@@ -307,8 +312,26 @@ module "repo_osac_test_infra" {
     }
   ]
   required_approvals = null
-  push_allowances    = ["/openshift-merge-robot", "osac-project/wg-infra", "osac-project/org-admins"]
-  environments       = [{ name = "e2e-test" }]
+  required_status_checks = [
+    { context = "e2e-vmaas-gate", integration_id = 15368 },
+    { context = "e2e-bmaas-gate", integration_id = 15368 },
+    { context = "e2e-caas-gate", integration_id = 15368 },
+    { context = "check-labels", integration_id = 15368 },
+  ]
+  ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
+  # push_allowances removed: classic branch protection's "Restrict who can
+  # push" blocks the merge queue bot. Ruleset update rule handles this instead.
+  environments = [{ name = "e2e-test" }]
+
+  merge_queue = {
+    merge_method                      = "REBASE"
+    max_entries_to_build              = 4
+    max_entries_to_merge              = 5
+    min_entries_to_merge              = 1
+    min_entries_to_merge_wait_minutes = 5
+    check_response_timeout_minutes    = 120
+    grouping_strategy                 = "ALLGREEN"
+  }
 }
 
 module "repo_massopencloud_templates" {
