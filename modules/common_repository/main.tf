@@ -147,10 +147,16 @@ resource "github_repository_ruleset" "status_checks" {
   }
 
   rules {
-    # When merge queue is enabled, block direct pushes via the ruleset
-    # instead of classic branch protection's restrict_pushes — the merge
-    # queue bot cannot be added to branch protection but can bypass rulesets.
-    update = var.merge_queue != null ? true : false
+    # When merge queue is enabled, require a PR for all changes. This
+    # blocks direct `git push` to main (unlike `update = true` which also
+    # breaks auto-merge evaluation). Native review count is 0 because
+    # approval is handled by Prow labels + check-labels gate.
+    dynamic "pull_request" {
+      for_each = var.merge_queue != null ? [1] : []
+      content {
+        required_approving_review_count = 0
+      }
+    }
 
     required_status_checks {
       # When merge queue is enabled, strict is unnecessary — the queue tests
