@@ -161,11 +161,7 @@ module "repo_osac" {
   # it's disabled at the GitHub level, not just by convention.
   allow_squash_merge      = false
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
-  # push_allowances removed: classic branch protection's "Restrict who can push"
-  # overrides the merge queue bot's implicit push access and cannot include it
-  # (the bot is an internal GitHub app with no discoverable slug). The ruleset's
-  # merge_queue rule prevents unauthorized merges; force_push_bypassers (above)
-  # controls force pushes.
+  push_allowances         = ["osac-project/wg-infra", "osac-project/org-admins"]
 
   merge_queue = {
     merge_method                      = "REBASE"
@@ -319,9 +315,8 @@ module "repo_osac_test_infra" {
     { context = "check-labels", integration_id = 15368 },
   ]
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
-  # push_allowances removed: classic branch protection's "Restrict who can
-  # push" blocks the merge queue bot. Ruleset update rule handles this instead.
-  environments = [{ name = "e2e-test" }]
+  push_allowances         = ["osac-project/wg-infra", "osac-project/org-admins"]
+  environments            = [{ name = "e2e-test" }]
 
   merge_queue = {
     merge_method                      = "REBASE"
