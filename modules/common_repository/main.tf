@@ -119,6 +119,17 @@ resource "github_repository_ruleset" "status_checks" {
     bypass_mode = "always"
   }
 
+  # GitHub Merge Queue app — must bypass the ruleset to push rebased
+  # commits to the protected branch after queue checks pass.
+  dynamic "bypass_actors" {
+    for_each = var.merge_queue != null ? [1] : []
+    content {
+      actor_id    = 262318
+      actor_type  = "Integration"
+      bypass_mode = "always"
+    }
+  }
+
   dynamic "bypass_actors" {
     for_each = var.ruleset_bypass_team_ids
     content {
@@ -136,6 +147,11 @@ resource "github_repository_ruleset" "status_checks" {
   }
 
   rules {
+    # When merge queue is enabled, block direct pushes via the ruleset
+    # instead of classic branch protection's restrict_pushes — the merge
+    # queue bot cannot be added to branch protection but can bypass rulesets.
+    update = var.merge_queue != null ? true : false
+
     required_status_checks {
       # When merge queue is enabled, strict is unnecessary — the queue tests
       # each PR against latest main before merging.
