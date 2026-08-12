@@ -147,6 +147,15 @@ resource "github_repository_ruleset" "status_checks" {
   }
 
   rules {
+    # Block direct pushes — require a PR. CHANGES_REQUESTED reviews are
+    # auto-dismissed by the auto-queue workflow so they don't block merging.
+    dynamic "pull_request" {
+      for_each = var.merge_queue != null ? [1] : []
+      content {
+        required_approving_review_count = 0
+      }
+    }
+
     required_status_checks {
       # When merge queue is enabled, strict is unnecessary — the queue tests
       # each PR against latest main before merging.

@@ -161,7 +161,6 @@ module "repo_osac" {
   # it's disabled at the GitHub level, not just by convention.
   allow_squash_merge      = false
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
-  push_allowances         = ["osac-project/wg-infra", "osac-project/org-admins"]
 
   merge_queue = {
     merge_method                      = "REBASE"
@@ -315,7 +314,6 @@ module "repo_osac_test_infra" {
     { context = "check-labels", integration_id = 15368 },
   ]
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
-  push_allowances         = ["osac-project/wg-infra", "osac-project/org-admins"]
   environments            = [{ name = "e2e-test" }]
 
   merge_queue = {
