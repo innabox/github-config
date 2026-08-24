@@ -155,6 +155,20 @@ module "repo_osac" {
     # Reads Prow-set labels (lgtm, approved, jira/valid-reference) and converts
     # them to a status check the merge queue can gate on.
     { context = "check-labels", integration_id = 15368 },
+    # Names match GitHub Actions job `name:` (or job id if unnamed). Job-level
+    # `if:` skips report success, so docs-only PRs are not blocked.
+    { context = "pre-commit", integration_id = 15368 },
+    { context = "Check generated code (fulfillment-service)", integration_id = 15368 },
+    { context = "Check generated code (osac-operator)", integration_id = 15368 },
+    { context = "Run unit tests", integration_id = 15368 },
+    { context = "Run unit tests (osac-metering)", integration_id = 15368 },
+    { context = "Run unit tests (osac-metering/adapters)", integration_id = 15368 },
+    { context = "Run unit tests (osac-metering/schema)", integration_id = 15368 },
+    { context = "Run integration test (fulfillment-service)", integration_id = 15368 },
+    { context = "Run integration test (osac-operator)", integration_id = 15368 },
+    { context = "Run integration test (osac-aap)", integration_id = 15368 },
+    { context = "Run integration test (osac-installer)", integration_id = 15368 },
+    { context = "Run integration test (bare-metal-fulfillment-operator)", integration_id = 15368 },
   ]
   # Preserve subtree-merge history/blame going forward -- squash-merging on the
   # mono-repo would collapse that history for every commit after cutover, so
