@@ -193,7 +193,7 @@ variable "ruleset_bypass_team_ids" {
 variable "merge_queue" {
   description = "Merge queue configuration. When set, enables merge queue on the default branch and disables strict status checks (the queue handles freshness)."
   type = object({
-    merge_method                      = optional(string, "MERGE")
+    merge_method                      = optional(string, "SQUASH")
     max_entries_to_build              = optional(number, 5)
     max_entries_to_merge              = optional(number, 5)
     min_entries_to_merge              = optional(number, 1)
