@@ -8,6 +8,8 @@ resource "github_repository" "repo" {
   allow_merge_commit   = var.allow_merge_commit
   allow_squash_merge   = var.allow_squash_merge
   allow_rebase_merge   = var.allow_rebase_merge
+  squash_merge_commit_title   = "PR_TITLE"
+  squash_merge_commit_message = "PR_BODY"
   has_issues           = true
   has_downloads        = false
   has_projects         = false
