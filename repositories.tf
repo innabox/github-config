@@ -156,14 +156,10 @@ module "repo_osac" {
     # them to a status check the merge queue can gate on.
     { context = "check-labels", integration_id = 15368 },
   ]
-  # Preserve subtree-merge history/blame going forward -- squash-merging on the
-  # mono-repo would collapse that history for every commit after cutover, so
-  # it's disabled at the GitHub level, not just by convention.
-  allow_squash_merge      = false
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
 
   merge_queue = {
-    merge_method                      = "REBASE"
+    merge_method                      = "SQUASH"
     max_entries_to_build              = 4
     max_entries_to_merge              = 5
     min_entries_to_merge              = 1
@@ -312,12 +308,16 @@ module "repo_osac_test_infra" {
     { context = "e2e-bmaas-gate", integration_id = 15368 },
     { context = "e2e-caas-gate", integration_id = 15368 },
     { context = "check-labels", integration_id = 15368 },
+    # Job name in osac-test-infra/.github/workflows/pre-commit.yaml.
+    # That workflow must listen to merge_group or the queue waits
+    # check_response_timeout_minutes for a check that never reports.
+    { context = "pre-commit", integration_id = 15368 },
   ]
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
   environments            = [{ name = "e2e-test" }]
 
   merge_queue = {
-    merge_method                      = "REBASE"
+    merge_method                      = "SQUASH"
     max_entries_to_build              = 4
     max_entries_to_merge              = 5
     min_entries_to_merge              = 1
