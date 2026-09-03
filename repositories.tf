@@ -169,6 +169,20 @@ module "repo_osac" {
     { context = "Run integration test (osac-aap)", integration_id = 15368 },
     { context = "Run integration test (osac-installer)", integration_id = 15368 },
     { context = "Run integration test (bare-metal-fulfillment-operator)", integration_id = 15368 },
+    # Cheap lints and component unit tests. Step skip reports success when
+    # that path did not change, so unrelated PRs are not blocked.
+    { context = "ansible-lint", integration_id = 15368 },
+    { context = "Check generated code (osac-metering/metering-service)", integration_id = 15368 },
+    { context = "Check Python code", integration_id = 15368 },
+    { context = "Check Go and proto code", integration_id = 15368 },
+    { context = "Build binaries", integration_id = 15368 },
+    { context = "dependency-review", integration_id = 15368 },
+    { context = "Lint Helm charts (osac-installer)", integration_id = 15368 },
+    { context = "Check Helm CRD sync (osac-operator)", integration_id = 15368 },
+    { context = "Check Helm CRD sync (bare-metal-fulfillment-operator)", integration_id = 15368 },
+    { context = "Run darwin keychain tests", integration_id = 15368 },
+    { context = "Run unit tests (osac-operator)", integration_id = 15368 },
+    { context = "Run unit tests (bare-metal-fulfillment-operator)", integration_id = 15368 },
   ]
   ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
 
