@@ -27,6 +27,21 @@ When a commit is pushed to the `main` branch (e.g., when a pull request merges),
 1. Open `team-members/<team>.csv`
 1. Add a new line of the form `<username>,<role>`, where `<role>` should be `member`.
 
+### Give someone runner management or merge-queue bypass without making them an org owner?
+
+Add them to the `infrastructure` team (`team-members/infrastructure.csv`). That team:
+
+- Holds GitHub's predefined **CI/CD admin** organization role, granting management of
+  org self-hosted runners and runner groups (plus Actions policies, secrets, variables,
+  and usage metrics). See `organization.tf`.
+- Is a ruleset bypass actor on `osac` and `osac-test-infra`, so its members can bypass
+  the merge queue and required status checks on those repos. See `ruleset_bypass_team_ids`
+  in `repositories.tf`.
+
+The broader `wg-infra` working group keeps the narrower `runner-manager` role and the same
+bypass; `infrastructure` is a smaller team for people who need this without the rest of the
+working-group context.
+
 ### Add a new repository?
 
 1. Open `repositories.tf`
