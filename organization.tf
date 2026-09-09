@@ -44,7 +44,7 @@ locals {
   cicd_admin_role_names = ["CI/CD admin", "cicd_admin", "ci_cd_admin"]
 
   cicd_admin_role_id = one([
-    for r in data.github_organization_roles.all.roles : r.id
+    for r in data.github_organization_roles.all.roles : r.role_id
     if r.source == "Predefined" && contains(local.cicd_admin_role_names, r.name)
   ])
 }
