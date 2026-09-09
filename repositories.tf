@@ -142,6 +142,10 @@ module "repo_osac" {
     {
       team_id    = "wg-infra"
       permission = "admin"
+    },
+    {
+      team_id    = "infrastructure"
+      permission = "push"
     }
   ]
   # Prow plugins handle approval via OWNERS (lgtm/approved labels), not native
@@ -184,7 +188,10 @@ module "repo_osac" {
     { context = "Run unit tests (osac-operator)", integration_id = 15368 },
     { context = "Run unit tests (bare-metal-fulfillment-operator)", integration_id = 15368 },
   ]
-  ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
+  ruleset_bypass_team_ids = [
+    github_team.all["wg-infra"].id,
+    github_team.all["infrastructure"].id,
+  ]
 
   merge_queue = {
     merge_method                      = "SQUASH"
@@ -335,6 +342,10 @@ module "repo_osac_test_infra" {
     {
       team_id    = "wg-infra"
       permission = "admin"
+    },
+    {
+      team_id    = "infrastructure"
+      permission = "push"
     }
   ]
   required_approvals = null
@@ -348,8 +359,11 @@ module "repo_osac_test_infra" {
     # check_response_timeout_minutes for a check that never reports.
     { context = "pre-commit", integration_id = 15368 },
   ]
-  ruleset_bypass_team_ids = [github_team.all["wg-infra"].id]
-  environments            = [{ name = "e2e-test" }]
+  ruleset_bypass_team_ids = [
+    github_team.all["wg-infra"].id,
+    github_team.all["infrastructure"].id,
+  ]
+  environments = [{ name = "e2e-test" }]
 
   merge_queue = {
     merge_method                      = "SQUASH"

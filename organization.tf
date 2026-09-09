@@ -27,3 +27,29 @@ resource "github_organization_role_team" "runner_manager_wg_infra" {
   role_id   = github_organization_role.runner_manager.role_id
   team_slug = github_team.all["wg-infra"].slug
 }
+
+# Assign GitHub's predefined "CI/CD admin" organization role to the infrastructure
+# team. It grants admin access to Actions policies, runners, runner groups, hosted
+# compute network configs, secrets, variables, and usage metrics for the org -- a
+# superset of the runner-manager role above -- without granting org-owner access.
+data "github_organization_roles" "all" {}
+
+locals {
+  # Predefined roles are returned with source = "Predefined". The API's exact
+  # spelling for this role's `name` isn't documented (GitHub's own docs example
+  # for the analogous "security manager" role uses the slug "security_manager"),
+  # so match the known spellings exactly rather than with a loose regex. If the
+  # lookup comes back empty, get the real value and pin role_id directly:
+  #   gh api /orgs/osac-project/organization-roles --jq '.roles[] | select(.source=="Predefined") | {id, name}'
+  cicd_admin_role_names = ["CI/CD admin", "cicd_admin", "ci_cd_admin"]
+
+  cicd_admin_role_id = one([
+    for r in data.github_organization_roles.all.roles : r.role_id
+    if r.source == "Predefined" && contains(local.cicd_admin_role_names, r.name)
+  ])
+}
+
+resource "github_organization_role_team" "cicd_admin_infrastructure" {
+  role_id   = local.cicd_admin_role_id
+  team_slug = github_team.all["infrastructure"].slug
+}
